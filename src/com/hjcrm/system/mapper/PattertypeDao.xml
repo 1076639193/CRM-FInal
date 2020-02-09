@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.PattertypeDao">
+	<select id="queryPattertype"  resultType="pattertype">
+		select p.patterTypeId,
+		p.patterTypeName,
+		p.courseid,
+		c.courseName
+		from hj_pattertype p,hj_course c
+		where p.courseid=c.courseid
+	</select>
+	<insert id="addpattertype" parameterType="pattertype">
+		insert into hj_pattertype(patterTypeName,courseid,create_id,create_time,update_id,update_time,dr) values(
+		#{patterTypeName},#{courseid},#{create_id},#{create_time},#{update_id},#{update_time},#{dr}
+		)
+	</insert>
+
+	<update id="updatepattertype" parameterType="pattertype">
+		update hj_pattertype set courseid=#{courseid},create_id=#{create_id},dr=#{dr} where patterTypeId=#{patterTypeId}
+	</update>
+	<delete id="deletepatterType" parameterType="java.util.List">
+		delete from hj_pattertype where patterTypeId in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.SubjectDao">
+
+	<select id="querySubject" parameterType="com.hjcrm.publics.util.PageBean"  resultType="subject">
+		select s.subjectid,s.courseid,c.coursename,s.subjectname,s.subjectcode,s.create_id,s.create_time,s.update_id,s.update_time,s.note,s.dr
+		FROM hj_subject s
+		LEFT JOIN hj_course c on s.courseid=c.courseid limit #{currentPage}, #{pageSize};
+
+	</select>
+	<select id="querySubjectById"   resultType="int">
+		select *FROM hj_subject where courseid=#{courseid}
+	</select>
+	<select id="queryAllSubjectInfoCount" resultType="int">
+			select count(*) from hj_subject;
+	</select>
+	<delete id="deleteSubject" parameterType="int">
+		delete from hj_subject where subjectid=#{subjectid}
+	</delete>
+	<update id="updateSubject" parameterType="subject">
+		update hj_subject set courseid=#{courseid},subjectname=#{subjectname},subjectcode=#{subjectcode},create_id=#{create_id},create_time=#{create_time},update_id=#{update_id},update_time=#{update_time},note=#{note},dr=#{dr} where subjectid=#{subjectid}
+	</update>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.UserDao">
+
+
+	<select id="queryUserInfoByEmail"   resultType="user">
+		select userid,username,roleid from hj_user where email=#{username}
+	</select>
+
+	<select id="queryPasswordIsExis"   parameterType="user"  resultType="user">
+		select userid from hj_user where userid=#{userid} and password=md5(#{password})
+	</select>
+	<select id="queryAllUserInfo" parameterType="com.hjcrm.publics.util.PageBean"  resultType="user">
+		select u.userid,u.username,u.phone,u.sex,u.roleid,u.deptid,u.email from hj_user u limit #{currentPage}, #{pageSize};
+	</select>
+	<select id="queryAllUser"  resultType="user">
+		select u.userid,u.username,u.phone,u.sex,u.roleid,u.deptid,u.email from hj_user u;
+	</select>
+	<insert id="saveOrUpdateUserInfo" parameterType="user">
+		insert into hj_user(username,password,email,phone,mobile,sex,deptid,roleid,deptgroup,state,note) values(
+#{username},md5(123123),#{email},#{phone},#{mobile},#{sex},#{deptid},#{roleid},#{deptgroup},#{state},#{note});
+  	</insert>
+	<delete id="deleteUser" parameterType="java.util.List">
+		delete from hj_user where userid in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<update id="queryRoleByDeptid" parameterType="user">
+		update hj_user set username=#{username},password=md5(#{password}),
+		email=#{email},phone=#{phone},
+		mobile=#{mobile},sex=#{sex}
+		,deptid=#{deptid},roleid=#{roleid},
+		deptgroup=#{deptgroup},
+		state=#{state},<if test="note!=null and note !=''">note=#{note}</if>
+		where userid=#{userid}
+	</update>
+	<select id="queryAllUSerInfoCount" resultType="int">
+		select count(*) from hj_user
+	</select>
+</mapper>

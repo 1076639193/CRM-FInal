@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.CourseDao">
+
+	<select id="queryCourse" parameterType="com.hjcrm.publics.util.PageBean"  resultType="course">
+		select courseid,courseName,coursecode,courseMoney,courseDescribe,courseTeacherid,courseTeacherName,create_id, create_time,update_id,update_time, note,dr
+		from hj_course  limit #{currentPage}, #{pageSize};
+
+	</select>
+	<select id="queryCourseByid"  resultType="course">
+		select courseid,courseName,coursecode,courseMoney,courseDescribe,courseTeacherid,courseTeacherName,create_id, create_time,update_id,update_time, note,dr
+		from hj_course;
+
+	</select>
+	<select id="queryAllCourseInfoCount" resultType="int">
+			select count(*) from hj_course;
+	</select>
+
+	<insert id="addCourse" parameterType="course">
+		insert into hj_course(courseName,coursecode,courseMoney,courseDescribe,courseTeacherid,courseTeacherName,create_id,create_time,update_id,update_time,note,dr) values(
+		#{courseName},#{coursecode},#{courseMoney},#{courseDescribe},#{courseTeacherid},#{courseTeacherName},#{create_id},#{create_time},#{update_id},#{update_time},#{note},#{dr}
+		)
+	</insert>
+	<delete id="deleteCourse" parameterType="java.util.List">
+		delete from hj_course where courseid in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<update id="updateCourse" parameterType="course">
+		update hj_course set courseName=#{courseName},coursecode=#{coursecode},courseMoney=#{courseMoney},courseDescribe=#{courseDescribe},courseTeacherid=#{courseTeacherid},courseTeacherName=#{courseTeacherName},create_id=#{create_id},create_time=#{create_time},update_id=#{update_id},update_time=#{update_time},note=#{note},dr=#{dr} where courseid=#{courseid}
+	</update>
+</mapper>

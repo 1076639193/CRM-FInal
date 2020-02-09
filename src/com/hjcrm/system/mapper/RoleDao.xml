@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.RoleDao">
+
+	<select id="queryRoleByDeptId" parameterType="string" resultType="role">
+		select r.roleid,r.rolename,r.deptid from hj_role r where r.deptid=#{deptId};
+	</select>
+	<select id="queryAllRole"   parameterType="com.hjcrm.publics.util.PageBean"  resultType="role">
+		  select r.roleid,r.rolename, d.deptname,
+			GROUP_CONCAT(m.menuname SEPARATOR ',' ) menuname
+
+			from hj_role r left join hj_role_menu  rm on r.roleid=rm.roleid
+										 left join hj_menu m on m.menuid=rm.menuid
+										 left join hj_dept d on r.deptid=d.deptid
+
+			 GROUP BY r.roleid limit #{currentPage},#{pageSize}
+	</select>
+	<delete id="deleteRole" parameterType="java.util.List">
+		delete from hj_role where roleid in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<insert id="addOrUpdateRole" parameterType="role">
+		insert into hj_role(rolename,deptid,dr,create_time,create_id,update_time,update_id) values(
+		#{rolename},#{deptid},#{dr},#{create_time},#{create_id},#{update_time},#{update_id}
+		)
+	</insert>
+	<select id="queryAllRoleInfoCount" resultType="int">
+		select count(*) from hj_role
+	</select>
+	<update id="updateRole" parameterType="role">
+		update hj_role set deptid=#{deptid},rolename=#{rolename} where roleid=#{roleid}
+	</update>
+</mapper>

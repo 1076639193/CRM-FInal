@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.PatterDao">
+
+
+	<select id="queryPatter"  parameterType="patter"  resultType="patter">
+	    select p.patterid,u.userid,p.roleid,p.courseid,p.patterTypeId,p.contentTypeId,p.shortTitle,
+           p.content,p.create_time,p.update_time,p.update_id,p.isshare,p.note,p.dr
+            from hj_patter p LEFT JOIN hj_user u on p.userid=u.userid where p.userid=#{userid} and p.courseid=#{courseid}
+
+
+	</select>
+	<select id="queryPatters"  parameterType="patter"  resultType="patter">
+	    select p.patterid,u.userid,p.roleid,p.courseid,p.patterTypeId,p.contentTypeId,p.shortTitle,
+p.content,p.create_time,p.update_time,p.update_id,p.isshare,p.note,p.dr
+from hj_patter p LEFT JOIN hj_user u on p.userid=u.userid where p.userid=#{userid} and p.courseid=#{courseid} and p.patterTypeId=#{patterTypeId}
+	</select>
+	<!--<delete id="deletePatter" parameterType="java.util.List">
+		delete from hj_patter where patterid in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id};
+		</foreach>
+	</delete>-->
+	<select id="queryAllPatterInfoCount" resultType="int">
+			select count(*) from hj_patter;
+	</select>
+	<insert id="addPatter" parameterType="patter">
+		insert into hj_patter(userid,roleid,courseid,patterTypeId,contentTypeId,shortTitle,content,create_time,update_time,update_id,isshare,note,dr) values(
+		#{userid},#{roleid},#{courseid},#{patterTypeId},#{contentTypeId},#{shortTitle},#{content},#{create_time},#{update_time},#{update_id},#{isshare},#{note},#{dr}
+		)
+	</insert>
+
+	<update id="updatePatter" parameterType="patter">
+		update hj_patter set shortTitle=#{shortTitle},content=#{content} where userid=#{userid} and patterid=#{patterid}
+	</update>
+</mapper>

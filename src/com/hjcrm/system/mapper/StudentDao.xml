@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjcrm.system.mapper.StudentDao">
+
+	<select id="queryStudent"   resultType="student">
+		/*select studentName,phone,source ,belongid ,courseid ,matchinfo_time ,arrive_money ,dealtime  from hj_student*/
+		/*select s.studentId,s.studentName,s.phone,s.source,s.matchinfo_time,s.dealtime,uu.username customerName,
+			s.*,u.username belongName,(s.dealprice + s.netedumoney) sumPayMoney
+		from hj_student s
+		left join hj_user u on u.userid = s.belongid
+		left join hj_user uu on uu.userid = s.customerId*/
+		select s.studentId,s.resourceId,s.preferinfo,s.userid,s.belongid,s.customerId,s.customer_time,s.studentName,
+s.phone,s.tel,s.weixin,s.qq,s.address,s.source,s.resourceLevel,s.idCard,s.email,s.company,s.classNum,s.studentstate,
+s.dr,s.returnNote,s.returnTime,s.returnId,s.create_time,s.preferinfo,s.netedumoney,s.remitWay,s.ispass,s.dealtime,s.dealprice,
+s.xiaoShouNote,s.remituser,
+b.subjectname,c.courseName,m.payMoney,u.username
+ from hj_student s LEFT JOIN hj_user u on s.userid=u.userid LEFT JOIN hj_course c on s.courseid=c.courseid LEFT JOIN
+hj_matchinfo m on s.studentName=m.studentName LEFT JOIN  hj_subject b on s.studentId=b.subjectid
+	</select>
+	<select id="queryStudnetMatchs" resultType="student">
+		/*select s.studentId,c.courseName,s.preferinfo,s.studentName,m.payMoney,s.remituser,b.subjectname from hj_student s LEFT JOIN hj_course c on s.courseid=c.courseid LEFT JOIN
+hj_matchinfo m on s.studentName=m.studentName LEFT JOIN  hj_subject b on s.studentId=b.subjectid;*/
+select *,c.courseName,m.payMoney,m.receiveTime,b.subjectname from hj_student s LEFT JOIN hj_course c on s.courseid=c.courseid LEFT JOIN
+hj_matchinfo m on s.studentName=m.studentName LEFT JOIN  hj_subject b on s.studentId=b.subjectid;
+	</select>
+	<select id="queryMatchinfo" resultType="matchinfo">
+		select * from hj_matchinfo
+	</select>
+	<select id="queryPassStudents" resultType="student">
+		select s.studentId,s.resourceId,s.preferinfo,s.userid,s.belongid,s.customerId,s.customer_time,s.studentName,
+s.phone,s.tel,s.weixin,s.qq,s.address,s.source,s.resourceLevel,s.idCard,s.email,s.company,s.classNum,s.studentstate,
+s.dr,s.returnNote,s.returnTime,s.returnId,s.create_time,s.preferinfo,s.netedumoney,s.remitWay,s.ispass,s.dealtime,s.dealprice,
+s.xiaoShouNote,s.remituser,
+b.subjectname,c.courseName,m.payMoney,u.username
+ from hj_student s LEFT JOIN hj_user u on s.userid=u.userid LEFT JOIN hj_course c on s.courseid=c.courseid LEFT JOIN
+hj_matchinfo m on s.studentName=m.studentName LEFT JOIN  hj_subject b on s.studentId=b.subjectid limit #{currentPage}, #{pageSize};
+	</select>
+	<select id="queryStudentById" resultType="student">
+		select * from hj_student where studentId=#{studentId}
+	</select>
+	<select id="queryOnLineStudents" resultType="student">
+			select * from hj_student  limit #{currentPage}, #{pageSize};
+	</select>
+	<update id="commit_caiwu" parameterType="int">
+		update hj_student set iscommitcaiwu=1 where studentId=#{studentId}
+	</update>
+	<insert id="addstudent" parameterType="dealrecord">
+		insert into hj_student(studentId,resourceId,userid,belongid,studentName,phone,tel,weixin,qq,address,source,sex,							resourceLevel,idCard,nation,education,school,email,isjieye,dr,create_time,update_id,
+					update_time,courseid,ishavenetedu,netedumoney,remituser,dealprice,dealtime,xiaoShouNote) values(
+					null,#{resourceId},#{userid},(select belongid from hj_resource where resourceId=#{resourceId}),
+					(select resourceName from hj_resource where resourceId=#{resourceId}),
+					(select phone from hj_resource where resourceId=#{resourceId}),
+					(select tel from hj_resource where resourceId=#{resourceId}),
+					(select weixin from hj_resource where resourceId=#{resourceId}),
+					(select qq from hj_resource where resourceId=#{resourceId}),
+					(select address from hj_resource where resourceId=#{resourceId}),
+					(select source from hj_resource where resourceId=#{resourceId}),
+					(select sex from hj_resource where resourceId=#{resourceId}),
+					(select resourceLevel from hj_resource where resourceId=#{resourceId}),
+					(select idCard from hj_resource where resourceId=#{resourceId}),null,null,null,
+					(select email from hj_resource where resourceId=#{resourceId}),null,
+				  	(select dr from hj_resource where resourceId=#{resourceId}),
+				  	(select create_time from hj_resource where resourceId=#{resourceId}),#{userid},
+				  	#{dealtime},#{courseid},#{ishavenetedu},#{netedumoney},#{remituser},
+				  	#{dealprice},#{dealtime},(select xiaoShouNote from hj_resource where resourceId=#{resourceId})
+		)
+	</insert>
+
+	<update id="returnStudent" parameterType="student">
+		update hj_student set studentstate=8,returnNote=#{returnNote} where studentId=#{studentId}
+	</update>
+	<update id="studentCommit" parameterType="int">
+		update hj_student set studentstate=2 where studentId=#{studentId}
+	</update>
+     <!-- 总表学员-->
+	<select id="queryStudentscaiwu"  parameterType="student" resultType="student">
+            select * from hj_student;
+
+	</select>
+
+	<select id="queryNetworkEduMoneyBycaiwu" parameterType="com.hjcrm.publics.util.PageBean" resultType="student">
+		   select *,c.courseName,m.payMoney,m.receiveTime,b.subjectname from hj_student s
+		   LEFT JOIN hj_course c on s.courseid=c.courseid
+		   LEFT JOIn hj_matchinfo m on s.studentName=m.studentName
+           LEFT JOIN  hj_subject b on s.studentId=b.subjectid
+             limit #{currentPage},#{pageSize}
+
+	</select>
+
+	<select id="queryAllNetworkInfoCount" parameterType="int" resultType="student">
+            select count(*)  from hj_student;
+	</select>
+
+
+
+</mapper>
